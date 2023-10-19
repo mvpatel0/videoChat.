@@ -18,6 +18,16 @@ navigator.mediaDevices.getUserMedia({
 .then((stream)=>{
     mystream=stream
     addvideostream(myvideo,stream)
+    socket.on("user-connected",(userId)=>{
+        connect2newuser(userId,stream)
+    })
+    peer.on('call',(call)=>{
+        call.answer(stream)
+        const video = document.createElement("video")
+        call.on("stream",(uservideostream)=>{
+            addvideostream(video,uservideostream)
+        })
+    })
 })
 function addvideostream(video,stream){
     video.srcObject=stream
@@ -27,6 +37,13 @@ function addvideostream(video,stream){
     })
 }
 
+function connect2newuser(userId,stream){
+    const call = peer.call(suerId,stream)
+    const video = document.createElement("video")
+    call.on("stream",(uservideostream)=>{
+        addvideostream(video,uservideostream)
+    })
+}
 $(function () {
     $("#show_chat").click(function () {
         $(".left-window").css("display", "none")
@@ -50,6 +67,38 @@ $(function () {
         if (e.key == "Enter" && $("#chat_message").val().length !== 0) {
             socket.emit("message", $("#chat_message").val());
             $("#chat_message").val("");
+        }
+    })
+
+    $('#mute_button').click(function(){
+        const enabled = mystream.getAudioTracks()[0].enabled
+        if(enabled){
+            mystream.getAudioTracks()[0].enabled=false
+            html=`<i class="fas fa-microphone-slash"></i>`
+            $('#mute_button').toggleClass("bgred")
+            $('#mute_button').html(html)
+        }
+        else{
+            mystream.getAudioTracks()[0].enabled=true
+            html=`<i class="fa fa-microphone"></i>`
+            $('#mute_button').toggleClass('bgred')
+            $('#mute_button').html(html)
+        }
+
+    })
+    $("#stop_video").click(function(){
+        const enabled = mystream.getVideoTracks()[0].enabled
+        if(enabled){
+            mystream.getVideoTracks()[0].enabled=false
+            html=`<i class="fas fa-video-slash"></i>`
+            $('#stop_video').toggleClass("bgred")
+            $('#stop_video').html(html)
+        }
+        else{
+            mystream.getVideoTracks()[0].enabled=true
+            html=`<i class="fa fa-video"></i>`
+            $('#stop_video').toggleClass('bgred')
+            $('#stop_video').html(html)
         }
     })
 
