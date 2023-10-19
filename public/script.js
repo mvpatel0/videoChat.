@@ -38,7 +38,7 @@ function addvideostream(video,stream){
 }
 
 function connect2newuser(userId,stream){
-    const call = peer.call(suerId,stream)
+    const call = peer.call(userId,stream)
     const video = document.createElement("video")
     call.on("stream",(uservideostream)=>{
         addvideostream(video,uservideostream)
