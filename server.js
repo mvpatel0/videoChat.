@@ -26,6 +26,27 @@ app.get("/", (req, res) => {
 app.get("/:room", (req, res) => {
     res.render("index", { roomId: req.params.room });
 });
+app.post("/send-mail",(req,res)=>{
+    const to = req.body.to
+    const url = req.body.url
+    const maildata = {
+        from:'ambe.entre09@gmail.com',
+        to:to,
+        subject:"Join the video call with me",
+        html:`<p>Hey there</p>
+        <p>Come and join us for having fun!..click on the link:${url}</p>`
+    }
+    transporter.sendMail(maildata,(error,info)=>{
+        if(error){
+            return console.log(error)
+
+        }
+        res.status(200).send({
+            message:'INVITATION SENT',
+            message_id:info.messageId
+        })
+    })
+})
 
 io.on("connection", (socket) => {
     socket.on('join-room',(roomId,userId,userName)=>{
