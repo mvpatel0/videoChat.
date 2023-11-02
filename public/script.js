@@ -101,6 +101,26 @@ $(function () {
             $('#stop_video').html(html)
         }
     })
+     $('#sharebutton').click(function(){
+        var data = {
+            url:'',
+            to:''
+        }
+        $.ajax({
+            url:'/send-mail',
+            type:'post',
+            data:JSON.stringify(data),
+            dataType:'json',
+            contentType:'application/json',
+            success:function(result){
+                alert('INVITATION SENT!')
+            },
+            error:function(result){
+                console.log(result.responseJSON)
+            }
+        })
+    })
+
 
 })
 
