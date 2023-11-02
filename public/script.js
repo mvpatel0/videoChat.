@@ -102,9 +102,10 @@ $(function () {
         }
     })
      $('#sharebutton').click(function(){
+         const to = prompt("ENTER THE E-MAIL ID")
         var data = {
-            url:'',
-            to:''
+            url:window.location.href,
+            to:to
         }
         $.ajax({
             url:'/send-mail',
